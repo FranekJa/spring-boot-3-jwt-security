@@ -32,4 +32,20 @@ public class UserService {
         // save the new password
         repository.save(user);
     }
+
+    public void updateProfile(UpdateProfileRequest request, Principal connectedUser) {
+
+        var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+        // Validate if new firstname and lastname are not empty?
+
+        // update the firstname and lastname
+        user.setFirstname(request.getNewFirstname());
+        user.setLastname(request.getNewLastname());
+
+        // save updated user
+        repository.save(user);
+    }
+
+
 }

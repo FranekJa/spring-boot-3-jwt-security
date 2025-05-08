@@ -1,19 +1,19 @@
 package com.alibou.security.user;
 
 import com.alibou.security.token.Token;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,16 +29,32 @@ public class User implements UserDetails {
   @Id
   @GeneratedValue
   private Integer id;
-  private String firstname;
-  private String lastname;
+  @Column(nullable = false, unique = true)
+  private String username;
+  @Column(nullable = false, unique = true)
   private String email;
+  @Column(nullable = false)
   private String password;
-
   @Enumerated(EnumType.STRING)
   private Role role;
-
   @OneToMany(mappedBy = "user")
   private List<Token> tokens;
+  @CreatedDate
+  @Column(nullable = false,updatable = false)
+  private LocalDateTime createDate;
+  @LastModifiedDate
+  @Column(insertable = false)
+  private LocalDateTime lastModified;
+  @CreatedBy
+  @Column(nullable = false,updatable = false)
+  private Integer createdBy;
+  @LastModifiedBy
+  @Column(insertable = false)
+  private Integer lastModifiedBy;
+  private String firstname;
+  private String lastname;
+
+
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -46,13 +62,11 @@ public class User implements UserDetails {
   }
 
   @Override
-  public String getPassword() {
-    return password;
-  }
+  public String getUsername() { return username; }
 
   @Override
-  public String getUsername() {
-    return email;
+  public String getPassword() {
+    return password;
   }
 
   @Override

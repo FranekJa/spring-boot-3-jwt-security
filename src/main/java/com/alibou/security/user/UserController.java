@@ -16,7 +16,7 @@ public class UserController {
 
     private final UserService service;
 
-    @PatchMapping
+    @PatchMapping("/password")
     public ResponseEntity<?> changePassword(
           @RequestBody ChangePasswordRequest request,
           Principal connectedUser
@@ -24,4 +24,14 @@ public class UserController {
         service.changePassword(request, connectedUser);
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/profile")
+    public ResponseEntity<?> updateProfile(
+            @RequestBody UpdateProfileRequest request,
+            Principal connectedUser
+    ) {
+        service.updateProfile(request, connectedUser);
+        return ResponseEntity.ok().build();
+    }
+
 }
