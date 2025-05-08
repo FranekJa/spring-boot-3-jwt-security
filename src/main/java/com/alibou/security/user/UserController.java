@@ -1,5 +1,6 @@
 package com.alibou.security.user;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,7 +19,7 @@ public class UserController {
 
     @PatchMapping("/password")
     public ResponseEntity<?> changePassword(
-          @RequestBody ChangePasswordRequest request,
+          @Valid @RequestBody ChangePasswordRequest request,
           Principal connectedUser
     ) {
         service.changePassword(request, connectedUser);
@@ -27,7 +28,7 @@ public class UserController {
 
     @PatchMapping("/profile")
     public ResponseEntity<?> updateProfile(
-            @RequestBody UpdateProfileRequest request,
+            @Valid @RequestBody UpdateProfileRequest request,
             Principal connectedUser
     ) {
         service.updateProfile(request, connectedUser);

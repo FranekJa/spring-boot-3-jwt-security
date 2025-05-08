@@ -30,7 +30,7 @@ public class SecurityApplication {
 					.firstname("Admin")
 					.lastname("Admin")
 					.email("admin@mail.com")
-					.password("password")
+					.password("password1!A")
 					.role(ADMIN)
 					.build();
 			System.out.println("Admin token: " + service.register(admin).getAccessToken());
@@ -40,7 +40,7 @@ public class SecurityApplication {
 					.firstname("Admin")
 					.lastname("Admin")
 					.email("manager@mail.com")
-					.password("password")
+					.password("password1!A")
 					.role(MANAGER)
 					.build();
 			System.out.println("Manager token: " + service.register(manager).getAccessToken());
