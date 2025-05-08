@@ -24,14 +24,14 @@ public class ValidationExceptionHandler {
     }
 
     @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<Map<String,Object>> handleInvalidPassword(InvalidPasswordException ex) {
+    public ResponseEntity<Map<String, Object>> handleInvalidPassword(InvalidPasswordException ex) {
         return ResponseEntity
                 .badRequest()
                 .body(Map.of("error", "Invalid password", "details", ex.getMessage()));
     }
 
-    @ExceptionHandler({ UsernameAlreadyTakenException.class, EmailAlreadyTakenException.class })
-    public ResponseEntity<Map<String,String>> handleDuplicate( RuntimeException ex ) {
+    @ExceptionHandler({UsernameAlreadyTakenException.class, EmailAlreadyTakenException.class})
+    public ResponseEntity<Map<String, String>> handleDuplicate(RuntimeException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("error", ex.getMessage()));
