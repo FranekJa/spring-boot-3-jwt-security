@@ -22,44 +22,6 @@ import static io.ksno.tennisBooking.security.user.Role.MANAGER;
 @EnableJpaAuditing(auditorAwareRef = "auditorAware", dateTimeProviderRef = "dateTimeProvider")
 public class SecurityApplication {
 
-    @Bean
-    public AuditorAware<Integer> auditorAware() {
-        return new ApplicationAuditAware();
-    }
-
-    @Bean
-    public DateTimeProvider dateTimeProvider() {
-        // Mam od razu implementację, ale mogę też podać własną klasę, która implementuje DateTimeProvider
-        return () -> Optional.of(OffsetDateTime.now(ZoneOffset.UTC));
-    }
-
-    @Bean
-    public CommandLineRunner commandLineRunner(
-            AuthenticationService service
-    ) {
-        return args -> {
-            var admin = RegisterRequest.builder()
-                    .username("Alibaba1")
-                    .firstname("Admin")
-                    .lastname("Admin")
-                    .email("admin@mail.com")
-                    .password("password1!A")
-                    .role(ADMIN)
-                    .build();
-            System.out.println("Admin token: " + service.register(admin).getAccessToken());
-
-            var manager = RegisterRequest.builder()
-                    .username("Alibaba2")
-                    .firstname("Admin")
-                    .lastname("Admin")
-                    .email("manager@mail.com")
-                    .password("password1!A")
-                    .role(MANAGER)
-                    .build();
-            System.out.println("Manager token: " + service.register(manager).getAccessToken());
-
-        };
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(SecurityApplication.class, args);

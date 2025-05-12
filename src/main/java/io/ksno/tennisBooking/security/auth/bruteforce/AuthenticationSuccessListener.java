@@ -12,8 +12,7 @@ public class AuthenticationSuccessListener
     private final IpAttemptRepository ipAttemptRepository;
     private final HttpServletRequest request;
 
-    public AuthenticationSuccessListener(IpAttemptRepository ipAttemptRepository,
-                                         HttpServletRequest request) {
+    public AuthenticationSuccessListener(IpAttemptRepository ipAttemptRepository, HttpServletRequest request) {
         this.ipAttemptRepository = ipAttemptRepository;
         this.request = request;
     }

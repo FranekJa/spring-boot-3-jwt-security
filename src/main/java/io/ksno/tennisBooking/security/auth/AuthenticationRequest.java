@@ -13,9 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthenticationRequest {
 
-    @Size(min = 5, max = 50)
+    @NotBlank(message = "Username is required")
+    @Size(min = 5, max = 50, message = "Username must be between 5 and 50 characters")
     private String username;
-    @NotBlank
+
+    @NotBlank(message = "Password is required")
     String password;
 
 }

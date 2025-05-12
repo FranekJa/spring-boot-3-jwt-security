@@ -1,5 +1,7 @@
 package io.ksno.tennisBooking.security.user;
 
+import io.ksno.tennisBooking.security.exceptions.InvalidPasswordException;
+import io.ksno.tennisBooking.security.user.password.PasswordConstraintValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +14,7 @@ import java.security.Principal;
 public class UserService {
 
     private final PasswordEncoder passwordEncoder;
+    private final PasswordConstraintValidator passwordValidator;
     private final UserRepository repository;
 
     public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
@@ -26,6 +29,12 @@ public class UserService {
         if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
             throw new IllegalStateException("Password are not the same");
         }
+        // Walidacja siły hasła
+        var result = passwordValidator.validate(request.getNewPassword());
+        if (!result.isValid()) {
+            String combined = String.join(", ", passwordValidator.getValidator().getMessages(result));
+            throw new InvalidPasswordException(combined);
+        }
 
         // update the password
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
@@ -37,8 +46,6 @@ public class UserService {
     public void updateProfile(UpdateProfileRequest request, Principal connectedUser) {
 
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-
-        // Validate if new firstname and lastname are not empty?
 
         // update the firstname and lastname
         user.setFirstname(request.getNewFirstname());

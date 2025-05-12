@@ -8,16 +8,14 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-public class AuthenticationFailureListener
-        implements ApplicationListener<AuthenticationFailureBadCredentialsEvent> {
+public class AuthenticationFailureListener implements ApplicationListener<AuthenticationFailureBadCredentialsEvent> {
 
     public static final int MAX_ATTEMPT = 5;
 
     private final IpAttemptRepository ipAttemptRepository;
     private final HttpServletRequest request;
 
-    public AuthenticationFailureListener(IpAttemptRepository ipAttemptRepository,
-                                         HttpServletRequest request) {
+    public AuthenticationFailureListener(IpAttemptRepository ipAttemptRepository, HttpServletRequest request) {
         this.ipAttemptRepository = ipAttemptRepository;
         this.request = request;
     }
@@ -25,8 +23,7 @@ public class AuthenticationFailureListener
     @Override
     public void onApplicationEvent(AuthenticationFailureBadCredentialsEvent event) {
         String ip = getClientIP();
-        IpAttempt attempt = ipAttemptRepository.findById(ip)
-                .orElse(IpAttempt.builder().ip(ip).build());
+        IpAttempt attempt = ipAttemptRepository.findById(ip).orElse(IpAttempt.builder().ip(ip).build());
 
         int newCount = attempt.getFailAttempts() + 1;
         attempt.setFailAttempts(newCount);

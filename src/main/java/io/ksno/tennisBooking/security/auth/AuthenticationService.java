@@ -35,13 +35,11 @@ public class AuthenticationService {
     public AuthenticationResponse register(RegisterRequest request) {
         // Sprawdź unikalność nazwy użytkownika
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new UsernameAlreadyTakenException(
-                    "Username '" + request.getUsername() + "' is already taken");
+            throw new UsernameAlreadyTakenException("Username '" + request.getUsername() + "' is already taken");
         }
         // Sprawdź unikalność e-maila
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new EmailAlreadyTakenException(
-                    "Email '" + request.getEmail() + "' is already taken");
+            throw new EmailAlreadyTakenException("Email '" + request.getEmail() + "' is already taken");
         }
         // Walidacja siły hasła
         var result = passwordValidator.validate(request.getPassword());
@@ -69,14 +67,8 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
-        var user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow();
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        var user = userRepository.findByUsername(request.getUsername()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
@@ -100,8 +92,9 @@ public class AuthenticationService {
 
     private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
-        if (validUserTokens.isEmpty())
+        if (validUserTokens.isEmpty()) {
             return;
+        }
         validUserTokens.forEach(token -> {
             token.setExpired(true);
             token.setRevoked(true);
@@ -109,10 +102,7 @@ public class AuthenticationService {
         tokenRepository.saveAll(validUserTokens);
     }
 
-    public void refreshToken(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) throws IOException {
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String username;
@@ -122,8 +112,7 @@ public class AuthenticationService {
         refreshToken = authHeader.substring(7);
         username = jwtService.extractUsername(refreshToken);
         if (username != null) {
-            var user = this.userRepository.findByUsername(username)
-                    .orElseThrow();
+            var user = this.userRepository.findByUsername(username).orElseThrow();
             if (jwtService.isTokenValid(refreshToken, user)) {
                 var accessToken = jwtService.generateToken(user);
                 revokeAllUserTokens(user);

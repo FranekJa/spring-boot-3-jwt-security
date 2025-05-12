@@ -17,13 +17,18 @@ public class RegisterRequest {
 
     @Size(max = 50)
     private String firstname;
+
     @Size(max = 50)
     private String lastname;
+
     @Email(message = "Invalid email format")
     private String email;
+
     @NotBlank
     private String password;
+
     @Size(min = 5, max = 50)
     private String username;
+
     private Role role;
 }
